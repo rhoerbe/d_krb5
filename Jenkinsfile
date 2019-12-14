@@ -1,10 +1,10 @@
 pipeline {
     agent any
     environment {
-        container='openldap'
-        image='openldap'
-        d_volumes="${container}.etc_openldap ${container}.var_db"
-        d_vol_args="-v ${container}.etc_openldap:/etc/openldap:Z -v ${container}.var_db:/var/db:Z"
+        container='kerb5'
+        image='kerb5'
+        d_volumes="${container}.etc_kerb5 ${container}.var_db"
+        d_vol_args="-v ${container}.etc_kerb5_conf_d:/etc/kerb5.conf.d:Z -v ${container}.var_log_krb5:/var/log/krb5/:Z"
         network='jenkins'
     }
     options { disableConcurrentBuilds() }
@@ -47,15 +47,14 @@ pipeline {
                     source ./jenkins_scripts.sh
                     create_docker_network
                     ttyopt=''; [[ -t 0 ]] && ttyopt='-t'  # autodetect tty
-                    docker run -i $ttyopt --rm --name $container --env-file=env $d_vol_args $image /tests/init_rootpw.sh
-                    echo "Starting $container"
-                    export LOGLEVEL=conns,config,stats,shell
-                    docker run --detach --rm --name $container --env-file=env --net=$network $d_vol_args $image
-                    wait_for_container_up && echo "$container started"
+                    #docker run -i $ttyopt --rm --name $container --env-file=env $d_vol_args $image /tests/setup.sh
+                    #echo "Starting $container"
+                    #docker run --detach --rm --name $container --env-file=env --net=$network $d_vol_args $image
+                    #wait_for_container_up && echo "$container started"
                 '''
             }
         }
-        stage('Test') {
+        /*stage('Test') {
             steps {
                 sh '''#!/bin/bash +e
                     ttyopt=''; [[ -t 0 ]] && ttyopt='-t'  # autodetect tty
@@ -64,8 +63,8 @@ pipeline {
                     echo "'docker exec /tests/test_00_all.sh' returned code=${rc}"
                '''
             }
-        }
-        stage('Push ') {
+        }*/
+        /*stage('Push ') {
             when {
                 expression { params.pushimage?.trim() != '' }
             }
@@ -79,7 +78,7 @@ pipeline {
                     exit $rc
                 '''
             }
-        }
+        }*/
     }
     post {
         always {
