@@ -1,0 +1,9 @@
+[realms]
+ EXAMPLE.AT = {
+  kdc = kerberos.example.at
+  admin_server = kerberos.example.at
+ }
+
+[domain_realm]
+ .example.at = EXAMPLE.AT
+ example.at = EXAMPLE.AT
