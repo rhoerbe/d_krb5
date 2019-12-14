@@ -3,8 +3,9 @@ pipeline {
     environment {
         container='kerb5'
         image='kerb5'
-        d_volumes="${container}.etc_kerb5 ${container}.var_db"
-        d_vol_args="-v ${container}.etc_kerb5_conf_d:/etc/kerb5.conf.d:Z -v ${container}.var_log_krb5:/var/log/krb5/:Z"
+        // keep d_volumes and d_vol_args in sync!
+        d_volumes="${container}.etc_kerb5_conf_d ${container}.var_kerberos ${container}.var_log_krb5"
+        d_vol_args="-v ${container}.etc_kerb5_conf_d:/etc/kerb5.conf.d:Z -v ${container}.var_kerberos:/var/kerberos:Z -v ${container}.var_log_krb5:/var/log/krb5/:Z"
         network='jenkins'
     }
     options { disableConcurrentBuilds() }
@@ -47,9 +48,9 @@ pipeline {
                     source ./jenkins_scripts.sh
                     create_docker_network
                     ttyopt=''; [[ -t 0 ]] && ttyopt='-t'  # autodetect tty
-                    #docker run -i $ttyopt --rm --name $container --env-file=env $d_vol_args $image /tests/setup.sh
+                    #docker run -i $ttyopt --rm -h=kdc.example.at --name $container --privileged --env-file=env $d_vol_args $image /tests/setup.sh
                     #echo "Starting $container"
-                    #docker run --detach --rm --name $container --env-file=env --net=$network $d_vol_args $image
+                    #docker run --detach --rm  -h=kdc.example.at --name $container --privileged --env-file=env --net=$network $d_vol_args $image
                     #wait_for_container_up && echo "$container started"
                 '''
             }

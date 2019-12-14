@@ -10,11 +10,12 @@ RUN yum -y update \
  && yum clean all
 
 COPY install/etc/krb5.conf /etc/krb5.conf
-COPY install/etc/krb5.conf.d/example.at /etc/krb5.conf.d/example.at
+#COPY install/etc/krb5.conf.d/example.at /etc/krb5.conf.d/example.at
 COPY install/bin/* /opt/bin/
 COPY install/tests/* /tests/
-RUN chmod -R +x /opt/bin/* /tests/*
+RUN chmod -R +x /opt/bin/* /tests/* \
+ && echo "LC_ALL=\"en_US.UTF-8\"" >> /etc/default/locale
 
-VOLUME /etc/etc/krb5.conf.d /var/log/krb5/
+VOLUME /etc/etc/krb5.conf.d /var/kerberos /var/log/krb5/
 
 CMD /opt/bin/start.sh
