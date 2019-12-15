@@ -22,6 +22,7 @@ echo "==== Adding root principal =========================================="
 kadmin.local -q "addprinc -pw ${KADMIN_PASSWORD} root/admin"
 kadmin.local -q "ktadd -k /var/kerberos/krb5kdc/kadm5.keytab kadmin/admin kadmin/changepw"
 kadmin.local -q "ktadd -k /var/kerberos/krb5kdc/kadm5.keytab root/admin"
+# ktadd requires pw change
 kadmin.local -q "change_password -pw changeit root/admin"
 
 echo "==== Adding user krbtest  ========================================================="
