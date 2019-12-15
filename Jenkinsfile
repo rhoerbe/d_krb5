@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        container='kerb5'
+        container='kdc.example.at'
         image='kerb5'
         // keep d_volumes and d_vol_args in sync!
         d_volumes="${container}.etc_kerb5_conf_d ${container}.var_kerberos ${container}.var_log_krb5"
