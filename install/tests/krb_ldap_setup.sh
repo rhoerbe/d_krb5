@@ -1,11 +1,16 @@
 #!/bin/bash
 
+LDAPADMINPW='changeit'
+LDAPURI='ldap://openldap.jenkins:12389'
+
+# check if ldap server is up
+ldapsearch -H $LDAPURI -x -D cn=admin,dc=at -w changeit -b dc=at -L 'uid=*'
+
 # create new Kerberos realm in LDAP
-kdb5_ldap_util -D cn=admin,dc=at create -subtrees dc=example,dc=at -r EXAMPLE.AT -s
+kdb5_ldap_util -D cn=admin,dc=at -w $LDAPADMINPW -H $LDAPURI create -subtrees dc=example,dc=at -r EXAMPLE.AT -s
 
 # check what has been done so far
-ldapsearch -Y EXTERNAL -b cn=ITTHON.CUCC,cn=krbcontainer,dc=itthon,dc=cucc dn -Q -LLL
+ldapsearch -H $LDAPURI -x -D cn=admin,dc=at -w changeit -b cn=EXAMPLE.AT,cn=krbcontainer,dc=example,dc=at dn -Q -LLL
 
-# set the credential kerberos the kdc will use to access ldap
-kdb5_ldap_util -D cn=admin,dc=itthon,dc=cucc stashsrvpw -f /var/kerberos/krb5kdc/service.keyfile cn=admin,dc=at
-
+# stash the static credential the kdc will use to access ldap
+kdb5_ldap_util -H $LDAPURI -D cn=admin,dc=at -w changeit stashsrvpw -f /var/kerberos/krb5kdc/service.keyfile cn=admin,dc=at
