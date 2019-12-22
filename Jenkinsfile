@@ -48,7 +48,9 @@ pipeline {
                     source ./jenkins_scripts.sh
                     create_docker_network
                     ttyopt=''; [[ -t 0 ]] && ttyopt='-t'  # autodetect tty
-                    docker run -i $ttyopt --rm -h=kdc.example.at --name $container --privileged --env-file=env $d_vol_args $image /tests/krb_ldap_setup.sh
+                    # local setup is automated - ldap backend requires interactive execution of /tests/krb_ldap_setup.sh
+                    docker run -i $ttyopt --rm -h=kdc.example.at --name $container --privileged --env-file=env $d_vol_args $image /tests/local_setup.sh
+                    #docker run -i $ttyopt --rm -h=kdc.example.at --name $container --privileged --env-file=env --net=$network $d_vol_args $image /tests/krb_ldap_setup.sh
                     echo "Starting $container"
                     docker run --detach --rm  -h=kdc.example.at --name $container --privileged --env-file=env --net=$network $d_vol_args $image
                     #wait_for_container_up && echo "$container started"
@@ -59,9 +61,8 @@ pipeline {
             steps {
                 sh '''#!/bin/bash +e
                     ttyopt=''; [[ -t 0 ]] && ttyopt='-t'  # autodetect tty
-                    docker exec $ttyopt $container /tests/load_data.sh
-                    docker exec $ttyopt $container /tests/test_00_all.sh
-                    echo "'docker exec /tests/test_00_all.sh' returned code=${rc}"
+                    docker exec $ttyopt $container /tests/init_users.sh
+                    docker run -it --rm -h=kclient --name kclient --privileged --env-file=env --net=$network -v kdc.example.at.etc_kerb5_conf_d:/etc/kerb5.conf.d:ro $image /tests/client_login.sh
                '''
             }
         }*/
