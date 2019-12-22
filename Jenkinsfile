@@ -25,7 +25,7 @@ pipeline {
                 sh '''#!/bin/bash -e
                     source ./jenkins_scripts.sh
                     remove_containers $container && echo '.'
-                    remove_volumes $d_volumes && echo '.'
+                    remove_volumes "$d_volumes" && echo '.'
                 '''
             }
         }
@@ -48,9 +48,9 @@ pipeline {
                     source ./jenkins_scripts.sh
                     create_docker_network
                     ttyopt=''; [[ -t 0 ]] && ttyopt='-t'  # autodetect tty
-                    #docker run -i $ttyopt --rm -h=kdc.example.at --name $container --privileged --env-file=env $d_vol_args $image /tests/setup.sh
-                    #echo "Starting $container"
-                    #docker run --detach --rm  -h=kdc.example.at --name $container --privileged --env-file=env --net=$network $d_vol_args $image
+                    docker run -i $ttyopt --rm -h=kdc.example.at --name $container --privileged --env-file=env $d_vol_args $image /tests/krb_ldap_setup.sh
+                    echo "Starting $container"
+                    docker run --detach --rm  -h=kdc.example.at --name $container --privileged --env-file=env --net=$network $d_vol_args $image
                     #wait_for_container_up && echo "$container started"
                 '''
             }
