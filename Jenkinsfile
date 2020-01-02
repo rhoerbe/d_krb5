@@ -52,7 +52,10 @@ pipeline {
                     docker run -i $ttyopt --rm -h=kdc.example.at --name $container --privileged --env-file=env $d_vol_args $image /tests/local_setup.sh
                     #docker run -i $ttyopt --rm -h=kdc.example.at --name $container --privileged --env-file=env --net=$network $d_vol_args $image /tests/krb_ldap_setup.sh
                     echo "Starting $container"
-                    docker run --detach --rm  -h=kdc.example.at --name $container --privileged --env-file=env --net=$network $d_vol_args $image
+                    if [[ "$keep_running" ]]; then
+                        expose='-p 88:88/tcp -p 88:88/udp'
+                    fi
+                    docker run --detach --rm  -h=kdc.example.at --name $container --privileged --env-file=env --net=$network $expose $d_vol_args $image
                     #wait_for_container_up && echo "$container started"
                 '''
             }
