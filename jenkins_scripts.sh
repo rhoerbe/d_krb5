@@ -33,9 +33,9 @@ remove_containers() {
 
 remove_volumes() {
     for vol in $*; do
-        volume_found=$(docker volume ls --format '{{.Name}}' --filter name=^$vol$)
+        volume_found=$(docker volume ls --format '{{.Name}}' --filter name="^${vol}$")
         if [[ "$volume_found" ]]; then
-            docker volume rm $volume_found && perl -pe 'chomp; print " removed\n"' \
+            docker volume rm "${volume_found}" || perl -pe 'chomp; print " removed\n"' \
             || (rc=$?; echo "'docker volume rm $volume_found' failed with code=${rc}"; exit $rc)
         fi
     done
@@ -52,10 +52,10 @@ wait_for_container_up() {
         status=$(docker container inspect -f '{{.State.Status}}' $container 2>/dev/null || echo '')
     done
     if [[ "${status}" == 'running' ]]; then
-        echo "Container $container up"
+        echo "Container ${container} up"
         return 0
     else
-        echo "Container $container not running, status=${status}\n"
+        echo "Container ${container} not running, status=${status}\n"
         return 1
     fi
 }

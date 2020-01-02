@@ -18,5 +18,7 @@ RUN chmod -R +x /opt/bin/* /tests/* \
  && echo "LC_ALL=\"en_US.UTF-8\"" >> /etc/default/locale
 
 VOLUME /etc/etc/krb5.conf.d /var/kerberos /var/log/krb5/
+EXPOSE 88/tcp
+EXPOSE 88/udp
 
 CMD /opt/bin/start.sh
