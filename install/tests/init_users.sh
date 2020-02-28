@@ -27,5 +27,13 @@ TESTUSER='krbtest'
 DEFAULTPW='changeit'
 useradd $TESTUSER
 kadmin.local -q "addprinc -pw ${DEFAULTPW} ${TESTUSER}"
+kadmin.local -q "list_principals"
 
+echo "==== Adding server principals ====================================================="
+
+DEFAULTPW='changeit'
+for TESTUSER in im6 im7 im8 im9 hoerthm bosankik hoerber; do
+    useradd $TESTUSER
+    kadmin.local -q "addprinc -pw ${DEFAULTPW} ${TESTUSER}"
+done
 kadmin.local -q "list_principals"
