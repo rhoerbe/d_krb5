@@ -32,8 +32,17 @@ kadmin.local -q "list_principals"
 echo "==== Adding server principals ====================================================="
 
 DEFAULTPW='changeit'
-for TESTUSER in im6 im7 im8 im9 hoerthm bosankik hoerber; do
+for TESTUSER in im6 im7 im8 im9 hoerthm bosankik hoerber host/im6.example.at; do
     useradd $TESTUSER
     kadmin.local -q "addprinc -pw ${DEFAULTPW} ${TESTUSER}"
+done
+kadmin.local -q "list_principals"
+
+
+DEFAULTPW='changeit'
+for n in 6 7 8 9; do
+    TESTUSER="SAP/mpim${n}-ci.example.at"
+	useradd $TESTUSER
+	DEFAULTPW='changeit' ${TESTUSER}"
 done
 kadmin.local -q "list_principals"

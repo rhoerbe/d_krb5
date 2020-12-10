@@ -35,8 +35,17 @@ Test with MIT Kerberos for Windows
 
 * Create Keytab File
 ktutil
-  add_entry -password -p im6 -k 1 -e aes128-cts-hmac-sha1-96
-  add_entry -password -p im6 -k 1 -e aes128-cts-hmac-sha256-128
-  add_entry -password -p im6/im6.example.at -k 1 -e aes128-cts-hmac-sha1-96
-  add_entry -password -p im6/im6.example.at -k 1 -e aes128-cts-hmac-sha256-128
-  write_kt im6_v3.keytab
+  add_entry -password -p SAP/mpim6-ci.example.at -k 1 -e aes128-cts-hmac-sha1-96
+  add_entry -password -p SAP/mpim6-ci.example.at -k 1 -e aes256-cts-hmac-sha1-96
+  write_kt /etc/krb5.keytab_Vnn
+
+#  add_entry -password -p SAP/mpim6-ci -k 1 -e aes128-cts-hmac-sha1-96
+#  add_entry -password -p mpim6-ci -k 1 -e aes128-cts-hmac-sha1-96
+#  add_entry -password -p host/mpim6-ci -k 1 -e aes128-cts-hmac-sha1-96
+#  add_entry -password -p SAP/mpim6-ci.example.at -k 1 -e rc4-hmac
+#  add_entry -password -p SAP/mpim6-ci.example.at -k 1 -e aes128-cts-hmac-sha256-128
+#  add_entry -password -p SAP/mpim6-ci.EXAMPLE.AT -k 1 -e aes128-cts-hmac-sha1-96
+#  add_entry -password -p SAP/mpim6-ci.EXAMPLE.AT -k 1 -e aes256-cts-hmac-sha1-96
+
+* Show keytab entries with enc type
+  klist -kt -e -K im6_v7.keytab
